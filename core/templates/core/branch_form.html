@@ -44,11 +44,16 @@
             </div>
 
             <div class="mb-3">
-                <label for="city_id" class="form-label">City ID</label>
-                <input type="number" name="city_id" id="city_id" class="form-control"
-                       value="{{ branch.city_id|default:'' }}" required
-                       placeholder="Enter city ID (e.g. 1)">
-                <small class="form-text text-muted">Later this will be a dropdown of cities.</small>
+                <label for="city_id" class="form-label">City</label>
+                <select name="city_id" id="city_id" class="form-select" required>
+                    <option value="">-- Select City --</option>
+                    {% for city in cities %}
+                        <option value="{{ city.id }}"
+                            {% if branch and branch.city_id == city.id %}selected{% endif %}>
+                            {{ city.name }} ({{ city.province_name }}, {{ city.country_name }})
+                        </option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="mb-3">

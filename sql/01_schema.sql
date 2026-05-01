@@ -101,7 +101,7 @@ ENGINE = InnoDB;
 -- Table `mydb`.`employee`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `mydb`.`employee` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `full_name` VARCHAR(255) NOT NULL,
   `national_code` VARCHAR(15) NOT NULL,
   `phone_number` VARCHAR(255) NULL,
@@ -250,9 +250,9 @@ CREATE TABLE IF NOT EXISTS `mydb`.`transaction` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `from_account_id` INT NOT NULL,
   `to_account_id` INT NOT NULL,
-  `account` DECIMAL(15,2) NOT NULL,
+  `amount` DECIMAL(15,2) NOT NULL,
   `transaction_type` VARCHAR(20) NULL,
-  `discription` VARCHAR(255) NULL,
+  `description` VARCHAR(255) NULL,
   `created_by` INT NOT NULL,
   `created_at` TIMESTAMP NULL,
   `status` VARCHAR(10) NULL,

@@ -2,22 +2,21 @@ from django.db import connection
 
 def call_procedure(proc_name, *args):
     """
-    Call a stored procedure that returns a single result set.
-    Returns a list of dictionaries (one per row) where keys are column names.
-    For procedures that do NOT return a result set (INSERT/UPDATE/DELETE),
-    returns an empty list.
+    Call a stored procedure using a parameterised CALL statement.
+    Returns a list of dicts (empty for DML procedures).
     """
     with connection.cursor() as cursor:
-        cursor.callproc(proc_name, args)
-        if cursor.description:  # there is a result set
+        placeholders = ', '.join(['%s'] * len(args))
+        sql = f"CALL {proc_name}({placeholders})"
+        cursor.execute(sql, args)
+        if cursor.description:
             columns = [col[0] for col in cursor.description]
             return [dict(zip(columns, row)) for row in cursor.fetchall()]
         return []
 
 def execute_query(query, params=None):
     """
-    Execute a raw SELECT query and return a list of dictionaries.
-    Use this for quick ad‑hoc queries (e.g., fetching a single row by id).
+    Execute a raw SELECT query and return a list of dicts.
     """
     with connection.cursor() as cursor:
         cursor.execute(query, params or [])

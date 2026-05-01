@@ -27,4 +27,19 @@ urlpatterns = [
     path('loan-types/add/', views.loan_type_add, name='loan_type_add'),
     path('loan-types/edit/<int:pk>/', views.loan_type_edit, name='loan_type_edit'),
     path('loan-types/delete/<int:pk>/', views.loan_type_delete, name='loan_type_delete'),
+    # Geographic
+    path('countries/', views.country_list, name='country_list'),
+    path('countries/add/', views.country_add, name='country_add'),
+    path('countries/edit/<int:pk>/', views.country_edit, name='country_edit'),
+    path('countries/delete/<int:pk>/', views.country_delete, name='country_delete'),
+
+    path('provinces/', views.province_list, name='province_list'),
+    path('provinces/add/', views.province_add, name='province_add'),
+    path('provinces/edit/<int:pk>/', views.province_edit, name='province_edit'),
+    path('provinces/delete/<int:pk>/', views.province_delete, name='province_delete'),
+
+    path('cities/', views.city_list, name='city_list'),
+    path('cities/add/', views.city_add, name='city_add'),
+    path('cities/edit/<int:pk>/', views.city_edit, name='city_edit'),
+    path('cities/delete/<int:pk>/', views.city_delete, name='city_delete'),
 ]

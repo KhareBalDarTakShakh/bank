@@ -1,0 +1,29 @@
+{% extends "core/base.html" %}
+{% block title %}{% if city %}Edit{% else %}Add{% endif %} City{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>{% if city %}Edit{% else %}Add{% endif %} City</h2>
+        <form method="post" action="{% if city %}{% url 'city_edit' city.id %}{% else %}{% url 'city_add' %}{% endif %}" class="card p-4 shadow">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label>Name</label>
+                <input type="text" name="name" class="form-control" value="{{ city.name|default:'' }}" required>
+            </div>
+            <div class="mb-3">
+                <label>Province</label>
+                <select name="province_id" class="form-select" required>
+                    <option value="">-- Select Province --</option>
+                    {% for p in provinces %}
+                        <option value="{{ p.id }}" {% if city and city.province_id == p.id %}selected{% endif %}>{{ p.name }} ({{ p.country_name }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-success">Save</button>
+                <a href="{% url 'city_list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
