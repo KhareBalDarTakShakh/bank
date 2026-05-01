@@ -1,0 +1,58 @@
+{% extends "core/base.html" %}
+
+{% block title %}Employees{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>All Employees</h2>
+    <a href="{% url 'employee_add' %}" class="btn btn-primary">+ Add New Employee</a>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>National Code</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Branch</th>
+                <th>Role</th>
+                <th>Username</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for emp in employees %}
+            <tr>
+                <td>{{ emp.id }}</td>
+                <td>{{ emp.full_name }}</td>
+                <td>{{ emp.national_code }}</td>
+                <td>{{ emp.phone_number|default:"-" }}</td>
+                <td>{{ emp.email|default:"-" }}</td>
+                <td>{{ emp.branch_name }}</td>
+                <td>{{ emp.role_name }}</td>
+                <td>{{ emp.username }}</td>
+                <td>
+                    {% if emp.acount_status %}
+                        <span class="badge bg-success">Active</span>
+                    {% else %}
+                        <span class="badge bg-danger">Inactive</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'employee_edit' emp.id %}" class="btn btn-sm btn-outline-warning">Edit</a>
+                    <a href="{% url 'employee_delete' emp.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10" class="text-center">No employees found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

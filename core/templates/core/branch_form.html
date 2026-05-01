@@ -1,0 +1,69 @@
+{% extends "core/base.html" %}
+
+{% block title %}{% if branch %}Edit Branch{% else %}Add New Branch{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>{% if branch %}Edit Branch{% else %}Add New Branch{% endif %}</h2>
+
+        <form method="post"
+              action="{% if branch %}{% url 'branch_edit' branch.id %}{% else %}{% url 'branch_add' %}{% endif %}"
+              class="card p-4 shadow">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Branch Name</label>
+                <input type="text" name="name" id="name" class="form-control"
+                       value="{{ branch.name|default:'' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="is_headquarter" class="form-label">Is Headquarters</label>
+                <select name="is_headquarter" id="is_headquarter" class="form-select">
+                    <option value="0" {% if not branch or branch.is_headquarter == 0 %}selected{% endif %}>No</option>
+                    <option value="1" {% if branch and branch.is_headquarter == 1 %}selected{% endif %}>Yes</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" name="email" id="email" class="form-control"
+                       value="{{ branch.email|default:'' }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="phone_number" class="form-label">Phone Number</label>
+                <input type="text" name="phone_number" id="phone_number" class="form-control"
+                       value="{{ branch.phone_number|default:'' }}">
+            </div>
+
+            <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <textarea name="address" id="address" class="form-control" rows="3">{{ branch.address|default:'' }}</textarea>
+            </div>
+
+            <div class="mb-3">
+                <label for="city_id" class="form-label">City ID</label>
+                <input type="number" name="city_id" id="city_id" class="form-control"
+                       value="{{ branch.city_id|default:'' }}" required
+                       placeholder="Enter city ID (e.g. 1)">
+                <small class="form-text text-muted">Later this will be a dropdown of cities.</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <select name="status" id="status" class="form-select">
+                    <option value="1" {% if not branch or branch.status == 1 %}selected{% endif %}>Active</option>
+                    <option value="0" {% if branch and branch.status == 0 %}selected{% endif %}>Inactive</option>
+                </select>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-success">Save</button>
+                <a href="{% url 'branch_list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

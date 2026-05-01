@@ -1,0 +1,46 @@
+{% extends "core/base.html" %}
+
+{% block title %}{% if loan_type %}Edit Loan Type{% else %}Add Loan Type{% endif %}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>{% if loan_type %}Edit Loan Type{% else %}Add Loan Type{% endif %}</h2>
+
+        <form method="post"
+              action="{% if loan_type %}{% url 'loan_type_edit' loan_type.id %}{% else %}{% url 'loan_type_add' %}{% endif %}"
+              class="card p-4 shadow">
+            {% csrf_token %}
+
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" name="name" id="name" class="form-control"
+                       value="{{ loan_type.name|default:'' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="max_amount" class="form-label">Max Amount</label>
+                <input type="number" step="0.01" name="max_amount" id="max_amount" class="form-control"
+                       value="{{ loan_type.max_amount|default:'' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="annual_interest_rate" class="form-label">Annual Interest Rate (%)</label>
+                <input type="number" step="0.01" name="annual_interest_rate" id="annual_interest_rate" class="form-control"
+                       value="{{ loan_type.annual_interest_rate|default:'' }}" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="max_installments" class="form-label">Max Installments</label>
+                <input type="number" name="max_installments" id="max_installments" class="form-control"
+                       value="{{ loan_type.max_installments|default:'' }}" required>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-success">Save</button>
+                <a href="{% url 'loan_type_list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

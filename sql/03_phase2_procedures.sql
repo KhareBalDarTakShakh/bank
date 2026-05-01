@@ -1,3 +1,10 @@
+-- ============================================================
+-- Phase 2 Stored Procedures (Corrected)
+-- 
+-- PREREQUISITE: Run this ALTER before using the procedures:
+--   ALTER TABLE mydb.employee MODIFY COLUMN id INT NOT NULL AUTO_INCREMENT;
+-- ============================================================
+
 DELIMITER $$
 
 -- ============================================================
