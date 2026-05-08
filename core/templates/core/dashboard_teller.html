@@ -1,0 +1,12 @@
+{% extends "core/base.html" %}
+
+{% block title %}Teller Dashboard{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h1>Teller Workspace</h1>
+    <p class="lead">Welcome, {{ request.session.employee.full_name }}.</p>
+    <p>Your branch ID: {{ request.session.employee.branch_id }}</p>
+    <p>Teller features (customer registration, account opening) will be added in Phase 4 & 5.</p>
+</div>
+{% endblock %}
