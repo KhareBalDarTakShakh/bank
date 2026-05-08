@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from core.utils import call_procedure, fetch_one
+from core.decorators import login_required, role_required
 
+@login_required
+@role_required('System Admin')
 def account_type_list(request):
     rows = call_procedure('sp_get_all_account_types')
     return render(request, 'core/account_type_list.html', {'account_types': rows})
 
+@login_required
+@role_required('System Admin')
 def account_type_add(request):
     if request.method == 'POST':
         try:
@@ -19,6 +24,8 @@ def account_type_add(request):
             messages.error(request, f'Error: {e}')
     return render(request, 'core/account_type_form.html')
 
+@login_required
+@role_required('System Admin')
 def account_type_edit(request, pk):
     if request.method == 'POST':
         try:
@@ -39,6 +46,8 @@ def account_type_edit(request, pk):
             return redirect('account_type_list')
         return render(request, 'core/account_type_form.html', {'account_type': account_type})
 
+@login_required
+@role_required('System Admin')
 def account_type_delete(request, pk):
     if request.method == 'POST':
         try:

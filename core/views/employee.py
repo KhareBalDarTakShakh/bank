@@ -1,12 +1,17 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from core.utils import call_procedure, fetch_one
+from core.decorators import login_required, role_required
 
+@login_required
+@role_required('System Admin')
 def employee_list(request):
     """Display all employees with branch and role names."""
     rows = call_procedure('sp_get_all_employees')
     return render(request, 'core/employee_list.html', {'employees': rows})
 
+@login_required
+@role_required('System Admin')
 def employee_add(request):
     if request.method == 'POST':
         full_name = request.POST.get('full_name')
@@ -43,6 +48,8 @@ def employee_add(request):
         'roles': roles,
     })
 
+@login_required
+@role_required('System Admin')
 def employee_edit(request, pk):
     if request.method == 'POST':
         full_name = request.POST.get('full_name')
@@ -86,6 +93,8 @@ def employee_edit(request, pk):
             'roles': roles,
         })
 
+@login_required
+@role_required('System Admin')
 def employee_delete(request, pk):
     # Use sp_get_all_employees to get branch_name/role_name
     all_emps = call_procedure('sp_get_all_employees')

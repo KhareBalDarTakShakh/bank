@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from core.utils import call_procedure, fetch_one
+from core.decorators import login_required, role_required
 
+@login_required
+@role_required('System Admin')
 def branch_list(request):
     rows = call_procedure('sp_get_all_branches')
     return render(request, 'core/branch_list.html', {'branches': rows})
 
+@login_required
+@role_required('System Admin')
 def branch_add(request):
     if request.method == 'POST':
         try:
@@ -25,6 +30,8 @@ def branch_add(request):
     cities = call_procedure('sp_get_all_cities')
     return render(request, 'core/branch_form.html', {'cities': cities})
 
+@login_required
+@role_required('System Admin')
 def branch_edit(request, pk):
     if request.method == 'POST':
         try:
@@ -54,6 +61,8 @@ def branch_edit(request, pk):
             'cities': cities
         })
 
+@login_required
+@role_required('System Admin')
 def branch_delete(request, pk):
     rows = call_procedure('sp_get_branch_by_id', pk)
     branch = rows[0] if rows else None

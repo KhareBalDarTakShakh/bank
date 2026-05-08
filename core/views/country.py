@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from core.utils import call_procedure, fetch_one
+from core.decorators import login_required, role_required
 
+@login_required
+@role_required('System Admin')
 def country_list(request):
     rows = call_procedure('sp_get_all_countries')
     return render(request, 'core/country_list.html', {'countries': rows})
 
+@login_required
+@role_required('System Admin')
 def country_add(request):
     if request.method == 'POST':
         try:
@@ -19,6 +24,8 @@ def country_add(request):
             messages.error(request, f'Error: {e}')
     return render(request, 'core/country_form.html')
 
+@login_required
+@role_required('System Admin')
 def country_edit(request, pk):
     if request.method == 'POST':
         try:
@@ -39,6 +46,8 @@ def country_edit(request, pk):
             return redirect('country_list')
         return render(request, 'core/country_form.html', {'country': country})
 
+@login_required
+@role_required('System Admin')
 def country_delete(request, pk):
     if request.method == 'POST':
         try:

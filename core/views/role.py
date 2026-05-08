@@ -1,11 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from core.utils import call_procedure, fetch_one
+from core.decorators import login_required, role_required
 
+@login_required
+@role_required('System Admin')
 def role_list(request):
     rows = call_procedure('sp_get_all_roles')
     return render(request, 'core/role_list.html', {'roles': rows})
-
+@login_required
+@role_required('System Admin')
 def role_add(request):
     if request.method == 'POST':
         try:
@@ -16,6 +20,8 @@ def role_add(request):
             messages.error(request, f'Error: {e}')
     return render(request, 'core/role_form.html')
 
+@login_required
+@role_required('System Admin')
 def role_edit(request, pk):
     if request.method == 'POST':
         try:
@@ -32,6 +38,8 @@ def role_edit(request, pk):
             return redirect('role_list')
         return render(request, 'core/role_form.html', {'role': role})
 
+@login_required
+@role_required('System Admin')
 def role_delete(request, pk):
     if request.method == 'POST':
         try:

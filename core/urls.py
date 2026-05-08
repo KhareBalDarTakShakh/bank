@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import account_type, branch, city, country, employee, loan_type, province, role
+from .views import account_type, auth, branch, city, country, employee, loan_type, province, role
 
 urlpatterns = [
+    path('', branch.branch_list, name='home'),
+
     # Employees
     path('employees/', employee.employee_list, name='employee_list'),
     path('employees/add/', employee.employee_add, name='employee_add'),
@@ -42,4 +44,13 @@ urlpatterns = [
     path('cities/add/', city.city_add, name='city_add'),
     path('cities/edit/<int:pk>/', city.city_edit, name='city_edit'),
     path('cities/delete/<int:pk>/', city.city_delete, name='city_delete'),
+
+    # Auth
+    path('login/', auth.login_view, name='login'),
+    path('logout/', auth.logout_view, name='logout'),
+    path('dashboard/', auth.dashboard_redirect, name='dashboard'),
+    path('dashboard/admin/', auth.dashboard_admin, name='dashboard_admin'),
+    path('dashboard/manager/', auth.dashboard_manager, name='dashboard_manager'),
+    path('dashboard/teller/', auth.dashboard_teller, name='dashboard_teller'),
+    path('dashboard/home/', auth.dashboard_home, name='dashboard_home'),
 ]

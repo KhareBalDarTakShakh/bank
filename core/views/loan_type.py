@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from core.utils import call_procedure, fetch_one
+from core.decorators import login_required, role_required
 
+@login_required
+@role_required('System Admin')
 def loan_type_list(request):
     rows = call_procedure('sp_get_all_loan_types')
     return render(request, 'core/loan_type_list.html', {'loan_types': rows})
 
+@login_required
+@role_required('System Admin')
 def loan_type_add(request):
     if request.method == 'POST':
         try:
@@ -21,6 +26,8 @@ def loan_type_add(request):
             messages.error(request, f'Error: {e}')
     return render(request, 'core/loan_type_form.html')
 
+@login_required
+@role_required('System Admin')
 def loan_type_edit(request, pk):
     if request.method == 'POST':
         try:
@@ -43,6 +50,8 @@ def loan_type_edit(request, pk):
             return redirect('loan_type_list')
         return render(request, 'core/loan_type_form.html', {'loan_type': loan_type})
 
+@login_required
+@role_required('System Admin')
 def loan_type_delete(request, pk):
     if request.method == 'POST':
         try:

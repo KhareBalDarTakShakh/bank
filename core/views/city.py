@@ -1,11 +1,16 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from core.utils import call_procedure, fetch_one
+from core.decorators import login_required, role_required
 
+@login_required
+@role_required('System Admin')
 def city_list(request):
     rows = call_procedure('sp_get_all_cities')
     return render(request, 'core/city_list.html', {'cities': rows})
 
+@login_required
+@role_required('System Admin')
 def city_add(request):
     if request.method == 'POST':
         try:
@@ -20,6 +25,8 @@ def city_add(request):
     provinces = call_procedure('sp_get_all_provinces')
     return render(request, 'core/city_form.html', {'provinces': provinces})
 
+@login_required
+@role_required('System Admin')
 def city_edit(request, pk):
     if request.method == 'POST':
         try:
@@ -44,6 +51,8 @@ def city_edit(request, pk):
             'provinces': provinces
         })
 
+@login_required
+@role_required('System Admin')
 def city_delete(request, pk):
     if request.method == 'POST':
         try:
