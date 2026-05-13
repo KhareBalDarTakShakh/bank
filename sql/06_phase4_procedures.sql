@@ -123,7 +123,7 @@ BEGIN
     END IF;
 
     WHILE v_exists > 0 DO
-        SET v_account_number = LPAD(FLOOR(RAND() * 10000000000000000), 16, '0');
+        SET v_account_number = LPAD(CAST(FLOOR(RAND() * 10000000000000000) AS UNSIGNED), 16, '0');
         SELECT COUNT(*) INTO v_exists FROM account WHERE account_number = v_account_number;
     END WHILE;
 
@@ -144,11 +144,11 @@ BEGIN
     DECLARE new_id INT;
 
     WHILE v_exists > 0 DO
-        SET v_card_number = LPAD(FLOOR(RAND() * 10000000000000000), 16, '0');
+        SET v_card_number = LPAD(CAST(FLOOR(RAND() * 10000000000000000) AS UNSIGNED), 16, '0');
         SELECT COUNT(*) INTO v_exists FROM card WHERE card_number = v_card_number;
     END WHILE;
 
-    SET v_cvv2 = LPAD(FLOOR(RAND() * 1000), 3, '0');
+    SET v_cvv2 = LPAD(CAST(FLOOR(RAND() * 1000) AS UNSIGNED), 3, '0');
 
     INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at)
     VALUES (p_account_id, v_card_number, v_cvv2, DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());
