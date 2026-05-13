@@ -27,7 +27,8 @@
                             <li class="nav-item"><a class="nav-link" href="{% url 'province_list' %}">Provinces</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'city_list' %}">Cities</a></li>
                         {% else %}
-                            <!-- Future links for Teller, Manager etc. can go here -->
+                            <!-- Teller / Manager / HelpDesk get operational links -->
+                            <li class="nav-item"><a class="nav-link" href="{% url 'customer_search' %}">Customers</a></li>
                         {% endif %}
                     </ul>
                     <div class="navbar-text text-white me-3">

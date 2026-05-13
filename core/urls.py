@@ -1,5 +1,17 @@
 from django.urls import path
-from .views import account_type, auth, branch, city, country, employee, loan_type, province, role
+from .views import (
+    account_type,
+    auth,
+    branch,
+    city,
+    country,
+    employee,
+    loan_type,
+    province,
+    role,
+    teller,
+    accounts
+)
 
 urlpatterns = [
     path('', branch.branch_list, name='home'),
@@ -53,4 +65,15 @@ urlpatterns = [
     path('dashboard/manager/', auth.dashboard_manager, name='dashboard_manager'),
     path('dashboard/teller/', auth.dashboard_teller, name='dashboard_teller'),
     path('dashboard/home/', auth.dashboard_home, name='dashboard_home'),
+
+    # Customer management (teller/manager/admin)
+    path('customers/', teller.customer_search, name='customer_search'),
+    path('customers/add/', teller.customer_add, name='customer_add'),
+    path('customers/<int:pk>/', teller.customer_profile, name='customer_profile'),
+    path('customers/<int:pk>/edit/', teller.customer_edit, name='customer_edit'),
+    path('customers/<int:pk>/toggle-active/', teller.customer_toggle_active, name='customer_toggle_active'),
+
+    # Account / card operations
+    path('accounts/open/<int:customer_id>/', accounts.account_open, name='account_open'),
+    path('accounts/issue-card/<int:account_id>/', accounts.issue_card, name='issue_card'),
 ]
