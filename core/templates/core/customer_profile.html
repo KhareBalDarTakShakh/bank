@@ -67,7 +67,9 @@
                                     <td>{{ card.card_number }}</td>
                                     <td>{{ card.cvv2 }}</td>
                                     <td>{{ card.expiry_date }}</td>
-                                    <td><span class="badge bg-{% if card.status == 'active' %}success{% else 'warning' %}">{{ card.status }}</span></td>
+                                    <td>
+                                        <span class="badge bg-{% if card.status == 'active' %}success{% else %}warning{% endif %}">{{ card.status }}</span>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
