@@ -76,4 +76,5 @@ urlpatterns = [
     # Account / card operations
     path('accounts/open/<int:customer_id>/', accounts.account_open, name='account_open'),
     path('accounts/issue-card/<int:account_id>/', accounts.issue_card, name='issue_card'),
+    path('cards/<int:card_id>/toggle-status/', accounts.toggle_card_status, name='toggle_card_status'),
 ]

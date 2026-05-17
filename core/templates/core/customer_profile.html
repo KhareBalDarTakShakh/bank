@@ -59,7 +59,7 @@
                     {% if acc.cards %}
                         <table class="table table-sm">
                             <thead>
-                                <tr><th>Card Number</th><th>CVV2</th><th>Expiry</th><th>Status</th></tr>
+                                <tr><th>Card Number</th><th>CVV2</th><th>Expiry</th><th>Status</th><th>Action</th></tr>
                             </thead>
                             <tbody>
                                 {% for card in acc.cards %}
@@ -69,6 +69,18 @@
                                     <td>{{ card.expiry_date }}</td>
                                     <td>
                                         <span class="badge bg-{% if card.status == 'active' %}success{% else %}warning{% endif %}">{{ card.status }}</span>
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{% url 'toggle_card_status' card.id %}" style="display:inline;">
+                                            {% csrf_token %}
+                                            {% if card.status == 'active' %}
+                                                <input type="hidden" name="new_status" value="inactive">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">Deactivate</button>
+                                            {% else %}
+                                                <input type="hidden" name="new_status" value="active">
+                                                <button type="submit" class="btn btn-sm btn-outline-success">Activate</button>
+                                            {% endif %}
+                                        </form>
                                     </td>
                                 </tr>
                                 {% endfor %}

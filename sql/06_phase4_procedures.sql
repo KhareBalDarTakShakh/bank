@@ -157,4 +157,15 @@ BEGIN
     SELECT new_id AS new_card_id, v_card_number AS card_number, v_cvv2 AS cvv2;
 END $$
 
+DROP PROCEDURE IF EXISTS `sp_toggle_card_status` $$
+CREATE PROCEDURE `sp_toggle_card_status`(
+    IN p_card_id INT,
+    IN p_new_status VARCHAR(10)
+)
+BEGIN
+    UPDATE card
+    SET status = p_new_status
+    WHERE id = p_card_id;
+END $$
+
 DELIMITER ;

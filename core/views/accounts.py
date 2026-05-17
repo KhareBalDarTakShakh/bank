@@ -56,3 +56,31 @@ def issue_card(request, account_id):
 
     # If GET, just redirect to home (should be POST only)
     return redirect('home')
+
+@login_required
+@role_required('Teller', 'Branch Manager', 'System Admin')
+def toggle_card_status(request, card_id):
+    """Activate or deactivate a card, then redirect back to the customer's profile."""
+    if request.method == 'POST':
+        new_status = request.POST.get('new_status', 'active')
+
+        # Retrieve customer_id from card's account
+        acc_rows = execute_query(
+            "SELECT a.customer_id FROM card c JOIN account a ON c.account_id = a.id WHERE c.id = %s",
+            [card_id]
+        )
+        if not acc_rows:
+            messages.error(request, 'Card not found.')
+            return redirect('customer_search')
+
+        customer_id = acc_rows[0]['customer_id']
+
+        try:
+            call_procedure('sp_toggle_card_status', card_id, new_status)
+            messages.success(request, f'Card marked as {new_status}.')
+        except Exception as e:
+            messages.error(request, str(e))
+
+        return redirect('customer_profile', pk=customer_id)
+
+    return redirect('home')
