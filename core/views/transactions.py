@@ -168,9 +168,12 @@ def transaction_history(request, account_id):
 @login_required
 @role_required('Branch Manager', 'System Admin')
 def branch_report(request):
-    """Show a summary report for the employee's own branch."""
     employee = request.session['employee']
     branch_id = employee['branch_id']
+
+    # Fetch branch name
+    branch_rows = execute_query("SELECT name FROM branch WHERE id = %s", [branch_id])
+    branch_name = branch_rows[0]['name'] if branch_rows else 'Unknown'
 
     try:
         rows = call_procedure('sp_get_branch_report', branch_id)
@@ -182,5 +185,5 @@ def branch_report(request):
     return render(request, 'core/branch_report.html', {
         'report': report,
         'branch_id': branch_id,
-        'branch_name': employee.get('branch_name', '')  # we might not have branch_name stored; optional
+        'branch_name': branch_name,
     })
