@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from ..utils import call_procedure, execute_query
-from ..decorators import login_required, role_required
+from core.utils import call_procedure, execute_query
+from core.decorators import login_required, role_required
 
 @login_required
 @role_required('Teller', 'Branch Manager', 'System Admin')

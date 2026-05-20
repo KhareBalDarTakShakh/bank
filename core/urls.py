@@ -10,7 +10,8 @@ from .views import (
     province,
     role,
     teller,
-    accounts
+    accounts,
+    transactions,
 )
 
 urlpatterns = [
@@ -77,4 +78,11 @@ urlpatterns = [
     path('accounts/open/<int:customer_id>/', accounts.account_open, name='account_open'),
     path('accounts/issue-card/<int:account_id>/', accounts.issue_card, name='issue_card'),
     path('cards/<int:card_id>/toggle-status/', accounts.toggle_card_status, name='toggle_card_status'),
+
+    # Transactions
+    path('transactions/transfer/', transactions.transfer_view, name='transfer'),
+    path('transactions/deposit/', transactions.deposit_view, name='deposit'),
+    path('transactions/withdrawal/', transactions.withdrawal_view, name='withdrawal'),
+    path('accounts/<int:account_id>/transactions/', transactions.transaction_history, name='transaction_history'),
+    path('branch/report/', transactions.branch_report, name='branch_report'),
 ]
