@@ -7,6 +7,7 @@
     <h1>Branch Manager</h1>
     <p class="lead">Welcome, {{ request.session.employee.full_name }}.</p>
     <p>Your branch ID: {{ request.session.employee.branch_id }}</p>
-    <p>Manager‑specific features will appear here in future phases.</p>
+    <a href="{% url 'customer_search' %}" class="btn btn-primary btn-lg mt-3">Customer Management</a>
+    <p class="text-muted mt-2">Register, search, and manage customers.</p>
 </div>
 {% endblock %}
