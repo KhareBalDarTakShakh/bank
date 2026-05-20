@@ -30,6 +30,12 @@
                         {% else %}
                             <!-- Teller / Manager / HelpDesk get operational links -->
                             <li class="nav-item"><a class="nav-link" href="{% url 'customer_search' %}">Customers</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'transfer' %}">Transfer</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'deposit' %}">Deposit</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'withdrawal' %}">Withdrawal</a></li>
+                            {% if request.session.employee.role_name == 'Branch Manager' or request.session.employee.role_name == 'System Admin' %}
+                                <li class="nav-item"><a class="nav-link" href="{% url 'branch_report' %}">Branch Report</a></li>
+                            {% endif %}
                         {% endif %}
                     </ul>
                     <div class="navbar-text text-white me-3">

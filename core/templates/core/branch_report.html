@@ -1,0 +1,51 @@
+{% extends "core/base.html" %}
+
+{% block title %}Branch Report – {{ branch_name }}{% endblock %}
+
+{% block content %}
+<h2>Branch Report: {{ branch_name }}</h2>
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Total Deposits</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ report.total_deposits }}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger mb-3">
+            <div class="card-header">Total Withdrawals</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ report.total_withdrawals }}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Vault Balance</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ report.vault_balance }}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">Branch Accounts</div>
+            <div class="card-body">
+                <h5 class="card-title">{{ report.branch_accounts }}</h5>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card border-secondary">
+            <div class="card-header">Total Branch Transactions</div>
+            <div class="card-body">
+                <h3>{{ report.branch_transactions }}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
