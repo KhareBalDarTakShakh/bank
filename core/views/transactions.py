@@ -187,3 +187,17 @@ def branch_report(request):
         'branch_id': branch_id,
         'branch_name': branch_name,
     })
+
+@login_required
+@role_required('System Admin')
+def audit_log_list(request):
+    """View recent audit log entries."""
+    rows = execute_query(
+        "SELECT al.id, al.employee_id, e.full_name AS employee_name, "
+        "al.action_type, al.table_affected, al.record_id, "
+        "al.new_value, al.created_at "
+        "FROM audit_log al "
+        "JOIN employee e ON al.employee_id = e.id "
+        "ORDER BY al.created_at DESC LIMIT 200"
+    )
+    return render(request, 'core/audit_log_list.html', {'logs': rows})
