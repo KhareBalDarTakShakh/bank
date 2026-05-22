@@ -49,6 +49,7 @@
                     <!-- Branch Report (Managers and Admins) -->
                     {% if request.session.employee.role_name == 'Branch Manager' or request.session.employee.role_name == 'System Admin' %}
                         <li class="nav-item"><a class="nav-link" href="{% url 'branch_report' %}">Branch Report</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'vault_list' %}">Vaults</a></li>
                     {% endif %}
                 </ul>
 

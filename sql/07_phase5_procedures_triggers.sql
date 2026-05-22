@@ -272,4 +272,18 @@ BEGIN
     );
 END $$
 
+DROP PROCEDURE IF EXISTS `sp_get_branch_vaults` $$
+CREATE PROCEDURE `sp_get_branch_vaults`(IN p_branch_id INT)
+BEGIN
+    SELECT a.id AS account_id,
+           a.account_number,
+           a.balance,
+           a.status,
+           a.opening_date
+    FROM account a
+    JOIN customer c ON a.customer_id = c.id
+    WHERE c.national_code LIKE 'VAULT%'
+      AND a.openend_by IN (SELECT id FROM employee WHERE branch_id = p_branch_id);
+END $$
+
 DELIMITER ;

@@ -32,13 +32,15 @@ BEGIN
     IF p_query IS NULL OR p_query = '' THEN
         SELECT id, full_name, national_code, phone_number, is_active
         FROM customer
+        WHERE national_code NOT LIKE 'VAULT%'
         ORDER BY id DESC
         LIMIT 100;
     ELSE
         SELECT id, full_name, national_code, phone_number, is_active
         FROM customer
-        WHERE national_code = p_query
-           OR full_name LIKE CONCAT('%', p_query, '%')
+        WHERE (national_code = p_query
+               OR full_name LIKE CONCAT('%', p_query, '%'))
+          AND national_code NOT LIKE 'VAULT%'
         ORDER BY id DESC
         LIMIT 100;
     END IF;

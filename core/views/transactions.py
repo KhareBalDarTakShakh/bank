@@ -201,3 +201,24 @@ def audit_log_list(request):
         "ORDER BY al.created_at DESC LIMIT 200"
     )
     return render(request, 'core/audit_log_list.html', {'logs': rows})
+
+@login_required
+@role_required('Branch Manager', 'System Admin')
+def vault_list(request):
+    """Display branch vaults for the logged‑in user's branch."""
+    branch_id = request.session['employee']['branch_id']
+
+    # Fetch branch name (optional)
+    branch_rows = execute_query("SELECT name FROM branch WHERE id = %s", [branch_id])
+    branch_name = branch_rows[0]['name'] if branch_rows else 'Unknown'
+
+    try:
+        rows = call_procedure('sp_get_branch_vaults', branch_id)
+    except Exception as e:
+        messages.error(request, str(e))
+        rows = []
+
+    return render(request, 'core/vault_list.html', {
+        'vaults': rows,
+        'branch_name': branch_name,
+    })

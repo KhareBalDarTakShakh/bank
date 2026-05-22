@@ -86,4 +86,5 @@ urlpatterns = [
     path('accounts/<int:account_id>/transactions/', transactions.transaction_history, name='transaction_history'),
     path('branch/report/', transactions.branch_report, name='branch_report'),
     path('audit-logs/', transactions.audit_log_list, name='audit_log_list'),
+    path('vaults/', transactions.vault_list, name='vault_list'),
 ]

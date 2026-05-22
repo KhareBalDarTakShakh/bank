@@ -1,7 +1,16 @@
+from django.http import HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from core.utils import call_procedure
 from core.decorators import login_required, role_required
+
+def _deny_vault_access_for_tellers(request, customer):
+    """Block Tellers/HelpDesk from viewing vault customers."""
+    if customer.get('national_code', '').startswith('VAULT'):
+        allowed_roles = ['Branch Manager', 'System Admin']
+        if request.session['employee']['role_name'] not in allowed_roles:
+            return HttpResponseForbidden("Access denied: vault accounts are not accessible.")
+    return None
 
 @login_required
 @role_required('Teller', 'Branch Manager', 'System Admin')
@@ -118,3 +127,4 @@ def customer_toggle_active(request, pk):
         except Exception as e:
             messages.error(request, str(e))
     return redirect('customer_profile', pk=pk)
+
