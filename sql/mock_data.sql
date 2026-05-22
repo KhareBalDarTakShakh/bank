@@ -41,27 +41,30 @@ INSERT INTO role (name) VALUES
 ('System Admin');
 
 -- -----------------------------------------------------------
--- Employees (all passwords: pass123, except admin: admin123)
+-- Employees
+-- All passwords: pass123  (hashed with SHA2)
+-- admin: admin123
+-- IDs will be 1..9 in order of insertion
 -- -----------------------------------------------------------
 INSERT INTO employee (full_name, national_code, phone_number, email, branch_id, role_id, username, password_hash, acount_status, created_at) VALUES
--- Tehran Central branch (id=1): manager + teller + helpdesk + admin
-('Ali Rezaei',       '0012345678', '09121111111', 'ali.rezaei@bank.ir',         1, (SELECT id FROM role WHERE name = 'Branch Manager'), 'ali.rezaei',      SHA2('pass123', 256), 1, NOW()),
-('Sara Mohammadi',   '0023456789', '09122222222', 'sara.mohammadi@bank.ir',     1, (SELECT id FROM role WHERE name = 'Teller'),         'sara.mohammadi',   SHA2('pass123', 256), 1, NOW()),
-('Neda Safari',      '0089012345', '09138888888', 'neda.safari@bank.ir',         1, (SELECT id FROM role WHERE name = 'HelpDesk'),       'neda.safari',      SHA2('pass123', 256), 1, NOW()),
-('Admin User',       '0000000000', '09120000000', 'admin@bank.ir',               1, (SELECT id FROM role WHERE name = 'System Admin'),   'admin',            SHA2('admin123', 256), 1, NOW()),
+-- Tehran Central (branch 1): manager + teller + helpdesk + admin
+('Ali Rezaei',       '0012345678', '09121111111', 'ali.rezaei@bank.ir',         1, (SELECT id FROM role WHERE name='Branch Manager'), 'ali.rezaei',      SHA2('pass123',256), 1, NOW()),
+('Sara Mohammadi',   '0023456789', '09122222222', 'sara.mohammadi@bank.ir',     1, (SELECT id FROM role WHERE name='Teller'),          'sara.mohammadi',   SHA2('pass123',256), 1, NOW()),
+('Neda Safari',      '0089012345', '09138888888', 'neda.safari@bank.ir',         1, (SELECT id FROM role WHERE name='HelpDesk'),        'neda.safari',      SHA2('pass123',256), 1, NOW()),
+('Admin User',       '0000000000', '09120000000', 'admin@bank.ir',               1, (SELECT id FROM role WHERE name='System Admin'),    'admin',            SHA2('admin123',256), 1, NOW()),
 
--- Shahriar branch (id=2): one teller
-('Reza Ansari',      '0034567890', '09123333333', 'reza.ansari@bank.ir',         2, (SELECT id FROM role WHERE name = 'Teller'),         'reza.ansari',      SHA2('pass123', 256), 1, NOW()),
+-- Shahriar (branch 2): teller
+('Reza Ansari',      '0034567890', '09123333333', 'reza.ansari@bank.ir',         2, (SELECT id FROM role WHERE name='Teller'),          'reza.ansari',      SHA2('pass123',256), 1, NOW()),
 
--- Tehran Northern branch (id=3): one manager
-('Maryam Hosseini',  '0045678901', '09124444444', 'maryam.hosseini@bank.ir',     3, (SELECT id FROM role WHERE name = 'Branch Manager'), 'maryam.hosseini',  SHA2('pass123', 256), 1, NOW()),
+-- Tehran Northern (branch 3): manager
+('Maryam Hosseini',  '0045678901', '09124444444', 'maryam.hosseini@bank.ir',     3, (SELECT id FROM role WHERE name='Branch Manager'),  'maryam.hosseini',  SHA2('pass123',256), 1, NOW()),
 
--- Isfahan Central branch (id=4): manager + teller
-('Ehsan Karimi',     '0056789012', '09135555555', 'ehsan.karimi@bank.ir',        4, (SELECT id FROM role WHERE name = 'Branch Manager'), 'ehsan.karimi',     SHA2('pass123', 256), 1, NOW()),
-('Fatemeh Ghasemi',  '0067890123', '09136666666', 'fatemeh.ghasemi@bank.ir',     4, (SELECT id FROM role WHERE name = 'Teller'),         'fatemeh.ghasemi',  SHA2('pass123', 256), 1, NOW()),
+-- Isfahan Central (branch 4): manager + teller
+('Ehsan Karimi',     '0056789012', '09135555555', 'ehsan.karimi@bank.ir',        4, (SELECT id FROM role WHERE name='Branch Manager'),  'ehsan.karimi',     SHA2('pass123',256), 1, NOW()),
+('Fatemeh Ghasemi',  '0067890123', '09136666666', 'fatemeh.ghasemi@bank.ir',     4, (SELECT id FROM role WHERE name='Teller'),          'fatemeh.ghasemi',  SHA2('pass123',256), 1, NOW()),
 
--- Kashan branch (id=5): one teller
-('Amir Tavakoli',    '0078901234', '09137777777', 'amir.tavakoli@bank.ir',        5, (SELECT id FROM role WHERE name = 'Teller'),         'amir.tavakoli',    SHA2('pass123', 256), 1, NOW());
+-- Kashan (branch 5): teller
+('Amir Tavakoli',    '0078901234', '09137777777', 'amir.tavakoli@bank.ir',        5, (SELECT id FROM role WHERE name='Teller'),          'amir.tavakoli',    SHA2('pass123',256), 1, NOW());
 
 -- -----------------------------------------------------------
 -- Account types
@@ -81,39 +84,81 @@ INSERT INTO loan_type (name, max_amount, annual_interest_rate, max_installments)
 ('Car Loan',      2000000000, 15.00, 48);
 
 -- -----------------------------------------------------------
--- PHASE 4 – Customers (with is_active)
+-- Customers (with is_active)
 -- -----------------------------------------------------------
 INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active) VALUES
-('Hossein Ahmadi',   '1111111111', '09121112233', 'Tehran, Valiasr St.',   1, 1),
+('Hossein Ahmadi',   '1111111111', '09121112233', 'Tehran, Valiasr St.',   1, 1),   -- registered by Ali Rezaei (employee 1)
 ('Zahra Moradi',     '2222222222', '09123334455', 'Isfahan, Chahar Bagh',  1, 1),
-('Mohammad Karimi',  '3333333333', '09124445566', 'Kashan, Bazaar',        5, 1),
-('Leila Ebrahimi',   '4444444444', '09125556677', 'Shahriar, Main St.',    2, 0);   -- inactive
+('Mohammad Karimi',  '3333333333', '09124445566', 'Kashan, Bazaar',        5, 1),   -- registered by Reza Ansari (employee 5)
+('Leila Ebrahimi',   '4444444444', '09125556677', 'Shahriar, Main St.',    2, 0);   -- inactive, registered by Sara Mohammadi (employee 2)
 
 -- -----------------------------------------------------------
--- Accounts (attached to customers 1, 2, and 3)
+-- Branch Vault Customers & Accounts
+-- Create a dummy customer and a savings account for each branch
+-- -----------------------------------------------------------
+-- Branch 1 vault
+INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active)
+VALUES ('Branch Vault 1', 'VAULT0000000001', '0000000000', 'System Vault', 1, 1);
+SET @vault_cust1 = LAST_INSERT_ID();
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
+VALUES ('6037991111111111', @vault_cust1, 1, 100000000000.00, 1, CURDATE(), 'active');
+
+-- Branch 2 vault
+INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active)
+VALUES ('Branch Vault 2', 'VAULT0000000002', '0000000000', 'System Vault', 1, 1);
+SET @vault_cust2 = LAST_INSERT_ID();
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
+VALUES ('6037992222222222', @vault_cust2, 1, 100000000000.00, 1, CURDATE(), 'active');
+
+-- Branch 3 vault
+INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active)
+VALUES ('Branch Vault 3', 'VAULT0000000003', '0000000000', 'System Vault', 1, 1);
+SET @vault_cust3 = LAST_INSERT_ID();
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
+VALUES ('6037993333333333', @vault_cust3, 1, 100000000000.00, 1, CURDATE(), 'active');
+
+-- Branch 4 vault
+INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active)
+VALUES ('Branch Vault 4', 'VAULT0000000004', '0000000000', 'System Vault', 1, 1);
+SET @vault_cust4 = LAST_INSERT_ID();
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
+VALUES ('6037994444444444', @vault_cust4, 1, 100000000000.00, 1, CURDATE(), 'active');
+
+-- Branch 5 vault
+INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active)
+VALUES ('Branch Vault 5', 'VAULT0000000005', '0000000000', 'System Vault', 1, 1);
+SET @vault_cust5 = LAST_INSERT_ID();
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
+VALUES ('6037995555555555', @vault_cust5, 1, 100000000000.00, 1, CURDATE(), 'active');
+
+-- -----------------------------------------------------------
+-- Customer Accounts
 -- -----------------------------------------------------------
 -- Customer 1: two accounts
-INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
-('6037991111222233', 1, 1, 15000000.00, 1, CURDATE(), 'active'),   -- Savings
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
+VALUES
+('6037991111222233', 1, 1, 15000000.00, 1, CURDATE(), 'active'),   -- Savings, opened by Ali Rezaei
 ('6037991111222244', 1, 2,  5000000.00, 1, CURDATE(), 'active');   -- Current
 
 -- Customer 2: one account
-INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
+VALUES
 ('6037992222333344', 2, 3, 25000000.00, 1, CURDATE(), 'active');   -- Fixed Deposit
 
--- Customer 3: one account (to show that having accounts doesn't block more)
-INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
+-- Customer 3: one account (opened by employee 5)
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
+VALUES
 ('6037993333444455', 3, 4, 10000000.00, 5, CURDATE(), 'active');   -- Short-term Deposit
 
--- Customer 4: no account (inactive – can't open one)
+-- Customer 4: no account (inactive)
 
 -- -----------------------------------------------------------
 -- Cards (with cvv2)
 -- -----------------------------------------------------------
 -- Card for account 1 (customer 1)
-INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at) VALUES
-(1, '5022291111222233', '123', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());
+INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at)
+VALUES (1, '5022291111222233', '123', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());
 
 -- Card for account 3 (customer 2)
-INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at) VALUES
-(3, '5022292222333344', '456', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());
+INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at)
+VALUES (3, '5022292222333344', '456', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());
