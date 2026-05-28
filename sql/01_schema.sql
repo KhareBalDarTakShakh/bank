@@ -322,6 +322,7 @@ CREATE TABLE IF NOT EXISTS `mydb`.`loan_request` (
   `customer_id` INT NOT NULL,
   `loan_type_id` INT NOT NULL,
   `amount` DECIMAL(15,2) NULL,
+  `installments` INT NOT NULL,
   `requested_at` TIMESTAMP NULL,
   `status` VARCHAR(20) NULL,
   `approved_by` INT NULL,

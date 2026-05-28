@@ -32,6 +32,7 @@
                             {% if customer.is_active %}Deactivate{% else %}Activate{% endif %}
                         </button>
                     </form>
+                    <a href="{% url 'customer_loans' customer.id %}" class="btn btn-outline-info btn-sm">View Loans</a>
                 </div>
             </div>
         </div>
