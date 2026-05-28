@@ -40,6 +40,7 @@ BEGIN
     DECLARE v_max_amount DECIMAL(15,2);
     DECLARE v_max_installments INT;
     DECLARE v_customer_active TINYINT(1);
+    DECLARE v_message VARCHAR(255);
 
     -- Validate customer is active
     SELECT is_active INTO v_customer_active FROM customer WHERE id = p_customer_id;
@@ -59,11 +60,13 @@ BEGIN
     END IF;
 
     IF p_amount > v_max_amount THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = CONCAT('Amount exceeds maximum (', v_max_amount, ') for this loan type.');
+        SET v_message = CONCAT('Amount exceeds maximum (', v_max_amount, ') for this loan type.');
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_message;
     END IF;
 
     IF p_installments > v_max_installments THEN
-        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = CONCAT('Installments exceed maximum (', v_max_installments, ') for this loan type.');
+        SET v_message = CONCAT('Installments exceed maximum (', v_max_installments, ') for this loan type.');
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = v_message;
     END IF;
 
     -- Insert the loan request
