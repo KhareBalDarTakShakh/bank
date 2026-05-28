@@ -1,0 +1,33 @@
+{% extends "core/base.html" %}
+
+{% block title %}Branch Vaults – {{ branch_name }}{% endblock %}
+
+{% block content %}
+<h2>Branch Vaults: {{ branch_name }}</h2>
+<div class="table-responsive mt-3">
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Account ID</th>
+                <th>Account Number</th>
+                <th>Balance</th>
+                <th>Status</th>
+                <th>Opened</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for vault in vaults %}
+            <tr>
+                <td>{{ vault.account_id }}</td>
+                <td>{{ vault.account_number }}</td>
+                <td>{{ vault.balance }}</td>
+                <td>{{ vault.status }}</td>
+                <td>{{ vault.opening_date }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-center">No vaults found for this branch.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

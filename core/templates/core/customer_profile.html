@@ -90,6 +90,8 @@
                         <p class="text-muted">No cards issued.</p>
                     {% endif %}
 
+                    <a href="{% url 'transaction_history' acc.id %}" class="btn btn-outline-info btn-sm">View Transactions</a>
+
                     <!-- Issue card form -->
                     <form method="post" action="{% url 'issue_card' acc.id %}">
                         {% csrf_token %}
