@@ -354,6 +354,8 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `mydb`.`installment` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `loan_request_id` INT NOT NULL,
+  `due_date` DATE NULL,
+  `amount` DECIMAL(15,2) NULL,
   `paid_amount` DECIMAL(15,2) NULL,
   `status` VARCHAR(10) NULL,
   `paid_at` TIMESTAMP NULL,
