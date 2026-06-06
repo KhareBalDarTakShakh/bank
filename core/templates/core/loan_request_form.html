@@ -1,0 +1,49 @@
+{% extends "core/base.html" %}
+
+{% block title %}New Loan Request{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2>Submit Loan Request</h2>
+        <form method="post" class="card p-4 shadow">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label for="customer_id" class="form-label">Customer</label>
+                <select name="customer_id" id="customer_id" class="form-select" required>
+                    <option value="">-- Select Customer --</option>
+                    {% for cust in customers %}
+                        <option value="{{ cust.id }}"
+                            {% if preselected_customer_id|stringformat:"s" == cust.id|stringformat:"s" %}selected{% endif %}>
+                            {{ cust.full_name }} ({{ cust.national_code }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="loan_type_id" class="form-label">Loan Type</label>
+                <select name="loan_type_id" id="loan_type_id" class="form-select" required>
+                    <option value="">-- Select Loan Type --</option>
+                    {% for lt in loan_types %}
+                        <option value="{{ lt.id }}">
+                            {{ lt.name }} (Max: {{ lt.max_amount }}, Rate: {{ lt.annual_interest_rate }}%, Max terms: {{ lt.max_installments }})
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="amount" class="form-label">Loan Amount</label>
+                <input type="number" step="0.01" name="amount" id="amount" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="installments" class="form-label">Number of Installments</label>
+                <input type="number" name="installments" id="installments" class="form-control" required>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Submit Request</button>
+                <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

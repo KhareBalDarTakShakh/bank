@@ -9,5 +9,7 @@
     <p>Your branch ID: {{ request.session.employee.branch_id }}</p>
     <a href="{% url 'customer_search' %}" class="btn btn-primary btn-lg mt-3">Customer Management</a>
     <p class="text-muted mt-2">Register, search, and manage customers.</p>
+    <a href="{% url 'loan_request' %}" class="btn btn-info btn-lg mt-3">New Loan Request</a>
+    <p class="text-muted mt-2">Submit a loan application for a customer.</p>
 </div>
 {% endblock %}

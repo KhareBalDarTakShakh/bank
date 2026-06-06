@@ -23,6 +23,18 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'deposit' %}">Deposit</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'withdrawal' %}">Withdrawal</a></li>
 
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="loanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Loans
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="loanDropdown">
+                            <li><a class="dropdown-item" href="{% url 'loan_request' %}">New Loan Request</a></li>
+                            {% if request.session.employee.role_name == 'Branch Manager' or request.session.employee.role_name == 'System Admin' %}
+                                <li><a class="dropdown-item" href="{% url 'loan_approval_queue' %}">Loan Approvals</a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+
                     {% if request.session.employee.role_name == 'System Admin' %}
                         <!-- Admin Management Dropdown -->
                         <li class="nav-item dropdown">

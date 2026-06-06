@@ -44,7 +44,7 @@ INSERT INTO role (name) VALUES
 -- Employees
 -- All passwords: pass123  (hashed with SHA2)
 -- admin: admin123
--- IDs will be 1..9 in order of insertion
+-- IDs will be 1..9 in order
 -- -----------------------------------------------------------
 INSERT INTO employee (full_name, national_code, phone_number, email, branch_id, role_id, username, password_hash, acount_status, created_at) VALUES
 -- Tehran Central (branch 1): manager + teller + helpdesk + admin
@@ -87,14 +87,13 @@ INSERT INTO loan_type (name, max_amount, annual_interest_rate, max_installments)
 -- Customers (with is_active)
 -- -----------------------------------------------------------
 INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active) VALUES
-('Hossein Ahmadi',   '1111111111', '09121112233', 'Tehran, Valiasr St.',   1, 1),   -- registered by Ali Rezaei (employee 1)
+('Hossein Ahmadi',   '1111111111', '09121112233', 'Tehran, Valiasr St.',   1, 1),   -- registered by Ali Rezaei
 ('Zahra Moradi',     '2222222222', '09123334455', 'Isfahan, Chahar Bagh',  1, 1),
-('Mohammad Karimi',  '3333333333', '09124445566', 'Kashan, Bazaar',        5, 1),   -- registered by Reza Ansari (employee 5)
-('Leila Ebrahimi',   '4444444444', '09125556677', 'Shahriar, Main St.',    2, 0);   -- inactive, registered by Sara Mohammadi (employee 2)
+('Mohammad Karimi',  '3333333333', '09124445566', 'Kashan, Bazaar',        5, 1),   -- registered by Reza Ansari
+('Leila Ebrahimi',   '4444444444', '09125556677', 'Shahriar, Main St.',    2, 0);   -- inactive
 
 -- -----------------------------------------------------------
 -- Branch Vault Customers & Accounts
--- Create a dummy customer and a savings account for each branch
 -- -----------------------------------------------------------
 -- Branch 1 vault
 INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active)
@@ -135,30 +134,50 @@ VALUES ('6037995555555555', @vault_cust5, 1, 100000000000.00, 1, CURDATE(), 'act
 -- Customer Accounts
 -- -----------------------------------------------------------
 -- Customer 1: two accounts
-INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
-VALUES
-('6037991111222233', 1, 1, 15000000.00, 1, CURDATE(), 'active'),   -- Savings, opened by Ali Rezaei
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
+('6037991111222233', 1, 1, 15000000.00, 1, CURDATE(), 'active'),   -- Savings
 ('6037991111222244', 1, 2,  5000000.00, 1, CURDATE(), 'active');   -- Current
 
 -- Customer 2: one account
-INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
-VALUES
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
 ('6037992222333344', 2, 3, 25000000.00, 1, CURDATE(), 'active');   -- Fixed Deposit
 
 -- Customer 3: one account (opened by employee 5)
-INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
-VALUES
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
 ('6037993333444455', 3, 4, 10000000.00, 5, CURDATE(), 'active');   -- Short-term Deposit
-
--- Customer 4: no account (inactive)
 
 -- -----------------------------------------------------------
 -- Cards (with cvv2)
 -- -----------------------------------------------------------
 -- Card for account 1 (customer 1)
-INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at)
-VALUES (1, '5022291111222233', '123', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());
+INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at) VALUES
+(1, '5022291111222233', '123', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());
 
 -- Card for account 3 (customer 2)
-INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at)
-VALUES (3, '5022292222333344', '456', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());
+INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at) VALUES
+(3, '5022292222333344', '456', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());
+
+-- -----------------------------------------------------------
+-- Loan Requests (for Phase 6 demo)
+-- -----------------------------------------------------------
+-- A pending loan for customer 1
+INSERT INTO loan_request (customer_id, loan_type_id, amount, installments, requested_at, status) VALUES
+(1, 1, 100000000.00, 24, NOW(), 'pending');   -- Personal loan for Hossein
+
+-- An approved loan for customer 2 (already has generated installments)
+INSERT INTO loan_request (customer_id, loan_type_id, amount, installments, requested_at, status, approved_by, approved_at) VALUES
+(2, 3, 500000000.00, 36, NOW() - INTERVAL 2 DAY, 'approved', 1, NOW());
+SET @approved_loan_id = LAST_INSERT_ID();
+
+-- Generate installments for the approved loan (manually, since approve procedure is not called here)
+-- Monthly rate = 15%/12 = 0.0125
+-- PMT = 500000000 * (0.0125 * 1.0125^36) / (1.0125^36 - 1) ≈ 17,800,000 (roughly)
+INSERT INTO installment (loan_request_id, due_date, amount, paid_amount, status) VALUES
+(@approved_loan_id, DATE_ADD(CURDATE(), INTERVAL 1 MONTH), 17800000.00, 0, 'unpaid'),
+(@approved_loan_id, DATE_ADD(CURDATE(), INTERVAL 2 MONTH), 17800000.00, 0, 'unpaid'),
+(@approved_loan_id, DATE_ADD(CURDATE(), INTERVAL 3 MONTH), 17800000.00, 0, 'unpaid');
+-- (just three for demo; real approve would create 36)
+
+-- A rejected loan for customer 3
+INSERT INTO loan_request (customer_id, loan_type_id, amount, installments, requested_at, status, approved_by, approved_at) VALUES
+(3, 2, 2000000000.00, 96, NOW() - INTERVAL 5 DAY, 'rejected', 6, NOW());  -- rejected by Maryam Hosseini (id 6)

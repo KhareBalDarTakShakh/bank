@@ -12,6 +12,7 @@ from .views import (
     teller,
     accounts,
     transactions,
+    loans,
 )
 
 urlpatterns = [
@@ -87,4 +88,13 @@ urlpatterns = [
     path('branch/report/', transactions.branch_report, name='branch_report'),
     path('audit-logs/', transactions.audit_log_list, name='audit_log_list'),
     path('vaults/', transactions.vault_list, name='vault_list'),
+
+    # ===== PHASE 6 – Loans =====
+    path('loans/request/', loans.loan_request, name='loan_request'),
+    path('loans/queue/', loans.loan_approval_queue, name='loan_approval_queue'),
+    path('loans/approve/<int:loan_id>/', loans.loan_approve, name='loan_approve'),
+    path('loans/reject/<int:loan_id>/', loans.loan_reject, name='loan_reject'),
+    path('customers/<int:customer_id>/loans/', loans.customer_loans, name='customer_loans'),
+    path('loans/<int:loan_id>/installments/', loans.loan_installments, name='loan_installments'),
+    path('installments/pay/<int:installment_id>/', loans.pay_installment, name='pay_installment'),
 ]
