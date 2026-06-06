@@ -23,6 +23,7 @@ class Command(BaseCommand):
             'sql/06_phase4_procedures.sql',
             'sql/07_phase5_procedures_triggers.sql',
             'sql/08_phase6_loans.sql',
+            'sql/09_phase7_events_and_views.sql',
             'sql/mock_data.sql',
         ]
 

@@ -1,3 +1,4 @@
+
 USE mydb;
 
 -- -----------------------------------------------------------
@@ -44,7 +45,6 @@ INSERT INTO role (name) VALUES
 -- Employees
 -- All passwords: pass123  (hashed with SHA2)
 -- admin: admin123
--- IDs will be 1..9 in order
 -- -----------------------------------------------------------
 INSERT INTO employee (full_name, national_code, phone_number, email, branch_id, role_id, username, password_hash, acount_status, created_at) VALUES
 -- Tehran Central (branch 1): manager + teller + helpdesk + admin
@@ -84,100 +84,90 @@ INSERT INTO loan_type (name, max_amount, annual_interest_rate, max_installments)
 ('Car Loan',      2000000000, 15.00, 48);
 
 -- -----------------------------------------------------------
--- Customers (with is_active)
+-- Customers (real + vaults + treasury)
 -- -----------------------------------------------------------
 INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active) VALUES
-('Hossein Ahmadi',   '1111111111', '09121112233', 'Tehran, Valiasr St.',   1, 1),   -- registered by Ali Rezaei
+('Hossein Ahmadi',   '1111111111', '09121112233', 'Tehran, Valiasr St.',   1, 1),
 ('Zahra Moradi',     '2222222222', '09123334455', 'Isfahan, Chahar Bagh',  1, 1),
-('Mohammad Karimi',  '3333333333', '09124445566', 'Kashan, Bazaar',        5, 1),   -- registered by Reza Ansari
+('Mohammad Karimi',  '3333333333', '09124445566', 'Kashan, Bazaar',        5, 1),
 ('Leila Ebrahimi',   '4444444444', '09125556677', 'Shahriar, Main St.',    2, 0);   -- inactive
 
--- -----------------------------------------------------------
--- Branch Vault Customers & Accounts
--- -----------------------------------------------------------
--- Branch 1 vault
-INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active)
-VALUES ('Branch Vault 1', 'VAULT0000000001', '0000000000', 'System Vault', 1, 1);
-SET @vault_cust1 = LAST_INSERT_ID();
-INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
-VALUES ('6037991111111111', @vault_cust1, 1, 100000000000.00, 1, CURDATE(), 'active');
+-- Branch vault customers (hidden from tellers)
+INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active) VALUES
+('Branch Vault 1', 'VAULT0000000001', '0000000000', 'System Vault', 1, 1),
+('Branch Vault 2', 'VAULT0000000002', '0000000000', 'System Vault', 1, 1),
+('Branch Vault 3', 'VAULT0000000003', '0000000000', 'System Vault', 1, 1),
+('Branch Vault 4', 'VAULT0000000004', '0000000000', 'System Vault', 1, 1),
+('Branch Vault 5', 'VAULT0000000005', '0000000000', 'System Vault', 1, 1);
 
--- Branch 2 vault
-INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active)
-VALUES ('Branch Vault 2', 'VAULT0000000002', '0000000000', 'System Vault', 1, 1);
-SET @vault_cust2 = LAST_INSERT_ID();
-INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
-VALUES ('6037992222222222', @vault_cust2, 1, 100000000000.00, 1, CURDATE(), 'active');
-
--- Branch 3 vault
-INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active)
-VALUES ('Branch Vault 3', 'VAULT0000000003', '0000000000', 'System Vault', 1, 1);
-SET @vault_cust3 = LAST_INSERT_ID();
-INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
-VALUES ('6037993333333333', @vault_cust3, 1, 100000000000.00, 1, CURDATE(), 'active');
-
--- Branch 4 vault
-INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active)
-VALUES ('Branch Vault 4', 'VAULT0000000004', '0000000000', 'System Vault', 1, 1);
-SET @vault_cust4 = LAST_INSERT_ID();
-INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
-VALUES ('6037994444444444', @vault_cust4, 1, 100000000000.00, 1, CURDATE(), 'active');
-
--- Branch 5 vault
-INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active)
-VALUES ('Branch Vault 5', 'VAULT0000000005', '0000000000', 'System Vault', 1, 1);
-SET @vault_cust5 = LAST_INSERT_ID();
-INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status)
-VALUES ('6037995555555555', @vault_cust5, 1, 100000000000.00, 1, CURDATE(), 'active');
+-- Bank Treasury (for interest payments)
+INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active) VALUES
+('Bank Treasury', 'BANK0000000', '0000000000', 'System Treasury', 1, 1);
 
 -- -----------------------------------------------------------
--- Customer Accounts
+-- Branch Vault Accounts
+-- -----------------------------------------------------------
+SET @vault1 = (SELECT id FROM customer WHERE national_code = 'VAULT0000000001');
+SET @vault2 = (SELECT id FROM customer WHERE national_code = 'VAULT0000000002');
+SET @vault3 = (SELECT id FROM customer WHERE national_code = 'VAULT0000000003');
+SET @vault4 = (SELECT id FROM customer WHERE national_code = 'VAULT0000000004');
+SET @vault5 = (SELECT id FROM customer WHERE national_code = 'VAULT0000000005');
+
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
+('6037991111111111', @vault1, 1, 100000000000.00, 1, CURDATE(), 'active'),
+('6037992222222222', @vault2, 1, 100000000000.00, 1, CURDATE(), 'active'),
+('6037993333333333', @vault3, 1, 100000000000.00, 1, CURDATE(), 'active'),
+('6037994444444444', @vault4, 1, 100000000000.00, 1, CURDATE(), 'active'),
+('6037995555555555', @vault5, 1, 100000000000.00, 1, CURDATE(), 'active');
+
+-- -----------------------------------------------------------
+-- Customer Accounts (for real customers)
 -- -----------------------------------------------------------
 -- Customer 1: two accounts
 INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
 ('6037991111222233', 1, 1, 15000000.00, 1, CURDATE(), 'active'),   -- Savings
 ('6037991111222244', 1, 2,  5000000.00, 1, CURDATE(), 'active');   -- Current
 
--- Customer 2: one account
+-- Customer 2: one account (Fixed Deposit)
 INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
-('6037992222333344', 2, 3, 25000000.00, 1, CURDATE(), 'active');   -- Fixed Deposit
+('6037992222333344', 2, 3, 25000000.00, 1, CURDATE(), 'active');
 
--- Customer 3: one account (opened by employee 5)
+-- Customer 3: one account (Short-term Deposit)
 INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
-('6037993333444455', 3, 4, 10000000.00, 5, CURDATE(), 'active');   -- Short-term Deposit
+('6037993333444455', 3, 4, 10000000.00, 5, CURDATE(), 'active');
+
+-- Customer 4 (inactive): no account
 
 -- -----------------------------------------------------------
--- Cards (with cvv2)
+-- Treasury Account (for interest payments)
 -- -----------------------------------------------------------
--- Card for account 1 (customer 1)
-INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at) VALUES
-(1, '5022291111222233', '123', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());
+SET @treasury = (SELECT id FROM customer WHERE national_code = 'BANK0000000');
+INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
+('9999999999999999', @treasury, 1, 1000000000000.00, 1, CURDATE(), 'active');
 
--- Card for account 3 (customer 2)
+-- -----------------------------------------------------------
+-- Cards
+-- -----------------------------------------------------------
 INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at) VALUES
+(1, '5022291111222233', '123', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW()),
 (3, '5022292222333344', '456', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());
 
 -- -----------------------------------------------------------
--- Loan Requests (for Phase 6 demo)
+-- Loan Requests (demo data for Phase 6)
 -- -----------------------------------------------------------
--- A pending loan for customer 1
+-- Pending loan for customer 1
 INSERT INTO loan_request (customer_id, loan_type_id, amount, installments, requested_at, status) VALUES
-(1, 1, 100000000.00, 24, NOW(), 'pending');   -- Personal loan for Hossein
+(1, 1, 100000000.00, 24, NOW(), 'pending');
 
--- An approved loan for customer 2 (already has generated installments)
+-- Approved loan for customer 2 (with some installments)
 INSERT INTO loan_request (customer_id, loan_type_id, amount, installments, requested_at, status, approved_by, approved_at) VALUES
 (2, 3, 500000000.00, 36, NOW() - INTERVAL 2 DAY, 'approved', 1, NOW());
 SET @approved_loan_id = LAST_INSERT_ID();
-
--- Generate installments for the approved loan (manually, since approve procedure is not called here)
--- Monthly rate = 15%/12 = 0.0125
--- PMT = 500000000 * (0.0125 * 1.0125^36) / (1.0125^36 - 1) ≈ 17,800,000 (roughly)
 INSERT INTO installment (loan_request_id, due_date, amount, paid_amount, status) VALUES
 (@approved_loan_id, DATE_ADD(CURDATE(), INTERVAL 1 MONTH), 17800000.00, 0, 'unpaid'),
 (@approved_loan_id, DATE_ADD(CURDATE(), INTERVAL 2 MONTH), 17800000.00, 0, 'unpaid'),
 (@approved_loan_id, DATE_ADD(CURDATE(), INTERVAL 3 MONTH), 17800000.00, 0, 'unpaid');
--- (just three for demo; real approve would create 36)
 
--- A rejected loan for customer 3
+-- Rejected loan for customer 3
 INSERT INTO loan_request (customer_id, loan_type_id, amount, installments, requested_at, status, approved_by, approved_at) VALUES
-(3, 2, 2000000000.00, 96, NOW() - INTERVAL 5 DAY, 'rejected', 6, NOW());  -- rejected by Maryam Hosseini (id 6)
+(3, 2, 2000000000.00, 96, NOW() - INTERVAL 5 DAY, 'rejected', 6, NOW());

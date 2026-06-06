@@ -13,6 +13,7 @@ from .views import (
     accounts,
     transactions,
     loans,
+    reports,
 )
 
 urlpatterns = [
@@ -97,4 +98,6 @@ urlpatterns = [
     path('customers/<int:customer_id>/loans/', loans.customer_loans, name='customer_loans'),
     path('loans/<int:loan_id>/installments/', loans.loan_installments, name='loan_installments'),
     path('installments/pay/<int:installment_id>/', loans.pay_installment, name='pay_installment'),
+
+    path('province/report/', reports.province_report, name='province_report'),
 ]

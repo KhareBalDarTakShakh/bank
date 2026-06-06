@@ -1,0 +1,66 @@
+{% extends "core/base.html" %}
+
+{% block title %}Province Report – {{ province_name }}{% endblock %}
+
+{% block content %}
+<h2>Province Dashboard: {{ province_name }}</h2>
+
+{% if report %}
+<!-- Summary Cards -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Total Deposits</div>
+            <div class="card-body"><h5 class="card-title">{{ report.total_deposits }}</h5></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Total Loans</div>
+            <div class="card-body"><h5 class="card-title">{{ report.total_loans }}</h5></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">Active Accounts</div>
+            <div class="card-body"><h5 class="card-title">{{ report.active_accounts }}</h5></div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-secondary mb-3">
+            <div class="card-header">Branches</div>
+            <div class="card-body"><h5 class="card-title">{{ report.branch_count }}</h5></div>
+        </div>
+    </div>
+</div>
+
+<!-- Per‑Branch Performance Table -->
+<h3 class="mt-5">Branch Performance</h3>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Branch Name</th>
+                <th>Active Accounts</th>
+                <th>Total Deposits</th>
+                <th>Total Loans</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for branch in branches %}
+            <tr>
+                <td>{{ branch.branch_name }}</td>
+                <td>{{ branch.active_accounts }}</td>
+                <td>{{ branch.total_deposits }}</td>
+                <td>{{ branch.total_loans }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4" class="text-center">No branches found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="alert alert-warning">No report data available.</div>
+{% endif %}
+{% endblock %}
