@@ -38,7 +38,7 @@
         </thead>
         <tbody>
             {% for inst in installments %}
-            <tr>
+            <tr class="{% if inst.status == 'unpaid' and inst.due_date < today %}table-danger{% endif %}">
                 <td>{{ forloop.counter }}</td>
                 <td>{{ inst.due_date }}</td>
                 <td>{{ inst.amount }}</td>

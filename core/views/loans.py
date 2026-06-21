@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from core.utils import call_procedure, execute_query
 from core.decorators import login_required, role_required
+from datetime import date
 
 
 @login_required
@@ -127,6 +128,7 @@ def loan_installments(request, loan_id):
     return render(request, 'core/loan_installments.html', {
         'loan': loan,
         'installments': installments,
+        'today': date.today(),
     })
 
 

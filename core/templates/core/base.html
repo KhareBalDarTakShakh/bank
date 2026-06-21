@@ -66,7 +66,6 @@
 
                         <!-- Branch Report & Vaults (Manager/Admin) -->
                         {% if request.session.employee.role_name == 'Branch Manager' or request.session.employee.role_name == 'System Admin' %}
-                            <li class="nav-item"><a class="nav-link" href="{% url 'loan_approval_queue' %}">Loan Approvals</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'branch_report' %}">Branch Report</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'vault_list' %}">Vaults</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'province_report' %}">Province Report</a></li>

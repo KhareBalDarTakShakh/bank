@@ -1,5 +1,5 @@
 -- ============================================================
--- COMPREHENSIVE MOCK DATA – All Phases
+-- BRAND NEW COMPLETE MOCK DATA – All Features Demonstrated
 -- ============================================================
 USE mydb;
 
@@ -44,8 +44,7 @@ INSERT INTO role (name) VALUES
 ('System Admin');
 
 -- -----------------------------------------------------------
--- Employees
--- All passwords: pass123 (hashed), admin: admin123
+-- Employees (all passwords: pass123, admin: admin123)
 -- -----------------------------------------------------------
 INSERT INTO employee (full_name, national_code, phone_number, email, branch_id, role_id, username, password_hash, acount_status, created_at) VALUES
 ('Ali Rezaei',       '0012345678', '09121111111', 'ali.rezaei@bank.ir',         1, (SELECT id FROM role WHERE name='Branch Manager'), 'ali.rezaei',      SHA2('pass123',256), 1, NOW()),
@@ -96,6 +95,12 @@ INSERT INTO customer (full_name, national_code, phone_number, address, registere
 INSERT INTO customer (full_name, national_code, phone_number, address, registered_by, is_active) VALUES
 ('Bank Treasury', 'BANK0000000', '0000000000', 'System Treasury', 1, 1);
 
+-- Customer logins (for customer panel)
+INSERT INTO customer_login (customer_id, username, password_hash, status) VALUES
+(1, 'hossein', SHA2('pass123', 256), 'active'),
+(2, 'zahra',   SHA2('pass123', 256), 'active'),
+(3, 'mohammad', SHA2('pass123', 256), 'active');
+
 -- -----------------------------------------------------------
 -- Branch Vault Accounts
 -- -----------------------------------------------------------
@@ -122,10 +127,10 @@ INSERT INTO account (account_number, customer_id, account_type_id, balance, open
 -- -----------------------------------------------------------
 -- Customer Accounts (for real customers)
 -- -----------------------------------------------------------
--- Customer 1: two accounts
+-- Customer 1: two accounts (Savings + Current)
 INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
-('6037991111222233', 1, 1, 15000000.00, 1, CURDATE(), 'active'),   -- Savings
-('6037991111222244', 1, 2,  5000000.00, 1, CURDATE(), 'active');   -- Current
+('6037991111222233', 1, 1, 15000000.00, 1, CURDATE(), 'active'),
+('6037991111222244', 1, 2,  5000000.00, 1, CURDATE(), 'active');
 
 -- Customer 2: one account (Fixed Deposit)
 INSERT INTO account (account_number, customer_id, account_type_id, balance, openend_by, opening_date, status) VALUES
@@ -138,117 +143,69 @@ INSERT INTO account (account_number, customer_id, account_type_id, balance, open
 -- Customer 4 (inactive): no account
 
 -- -----------------------------------------------------------
--- Cards (at least one per customer with active account)
+-- Cards (active & inactive)
 -- -----------------------------------------------------------
--- Cards for customer 1's accounts
 INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at) VALUES
-(1, '5022291111222233', '123', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW()),  -- for account 1 (6037991111222233)
-(1, '5022291111222244', '456', DATE_ADD(CURDATE(), INTERVAL 2 YEAR), 'inactive', NOW()), -- second card for same account (lost)
-(2, '5022291111222255', '789', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());  -- for account 2 (6037991111222244)
-
--- Card for customer 2
-INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at) VALUES
-(3, '5022292222333344', '234', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());  -- for account 3 (6037992222333344)
-
--- Card for customer 3
-INSERT INTO card (account_id, card_number, cvv2, expiry_date, status, issued_at) VALUES
-(4, '5022293333444455', '567', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());  -- for account 4 (6037993333444455)
+-- Customer 1 Savings card (active)
+(1, '5022291111222233', '123', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW()),
+-- Customer 1 Savings second card (inactive / lost)
+(1, '5022291111222244', '456', DATE_ADD(CURDATE(), INTERVAL 2 YEAR), 'inactive', NOW()),
+-- Customer 1 Current card (active)
+(2, '5022291111222255', '789', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW()),
+-- Customer 2 Fixed Deposit card
+(3, '5022292222333344', '234', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW()),
+-- Customer 3 Short-term card
+(4, '5022293333444455', '567', DATE_ADD(CURDATE(), INTERVAL 3 YEAR), 'active', NOW());
 
 -- -----------------------------------------------------------
--- Transactions (deposits, withdrawals, transfers, interest)
--- We'll use direct INSERTs into the transaction table and manually update account balances accordingly.
--- The triggers will handle balance updates, but for the mock data we can set balances after transactions.
--- We'll insert transactions and then let the triggers adjust balances; but since triggers are AFTER INSERT, we can just insert and they'll update balances automatically.
--- However, we already set balances above; after inserting these transactions, the balances will change.
--- We'll temporarily disable triggers for mock data insertion to keep our predetermined balances? No, better: we'll insert transactions and then manually adjust balances to be consistent, but then the triggers would double-adjust.
--- Easiest: we'll not insert transactions here; instead we'll rely on the application to create them. But the requirement is to have demo transactions.
--- We can insert into transaction table directly and then manually update account balances to reflect the net effect, ignoring triggers for mock data.
--- To avoid trigger interference, we can temporarily disable the triggers, insert transactions, then re-enable.
--- We'll do that within the script.
-
--- Disable the balance update trigger temporarily
-DROP TRIGGER IF EXISTS `trg_transaction_update_balances_temp`;
--- Actually we can just set session variable or use a trick. Simpler: we'll manually set the final balances and insert transactions as historical records.
--- Let's insert transactions without the trigger firing by disabling the trigger:
--- SET @OLD_SQL_MODE = @@SQL_MODE; -- not needed
--- We'll just DROP the trigger, insert, then recreate (but we need the trigger later). Better to use a dummy table or just insert with a note that balances are already final.
--- For demonstration, we'll just insert a few transactions and then set the account balances to what they would be after those transactions. Since the trigger will fire, we'll need to set the balances after the inserts.
-
--- Approach:
--- 1. Insert transactions (triggers will update balances automatically)
--- 2. Then we'll override balances to our desired final values (to match the demo narrative).
--- This way the trigger logic is exercised but final numbers are correct.
-
--- Note: our initial balances above were set before these transactions. After transactions, they'll change.
--- We'll just insert transactions and let the triggers adjust balances. Then we'll not re-set balances.
--- So the final balances will be: initial + deposits - withdrawals + interest received - transfers out + transfers in.
-
--- Let's define the transactions and then calculate expected balances. We'll set initial balances accordingly.
-
--- Actually, we'll just insert transactions and let the trigger run. The final balances will be whatever they become.
--- That's realistic. We'll insert a few deposits and a transfer.
-
--- Deposit into customer 1's savings (account 1) from vault1 (account ID 6? vault1 account is the first vault account: ID 6? Actually we inserted vault accounts before customer accounts; let's check: vault1 account is the first INSERT after vault customers, so ID=6? We'll use explicit account IDs.
--- We'll find account IDs by account_number.
-
+-- Transactions (mixed types, triggers update balances)
+-- -----------------------------------------------------------
 SET @vault1_acc_id = (SELECT id FROM account WHERE account_number = '6037991111111111');
 SET @cust1_sav_id  = (SELECT id FROM account WHERE account_number = '6037991111222233');
 SET @cust1_cur_id  = (SELECT id FROM account WHERE account_number = '6037991111222244');
 SET @cust2_acc_id  = (SELECT id FROM account WHERE account_number = '6037992222333344');
 SET @treasury_id   = (SELECT id FROM account WHERE account_number = '9999999999999999');
 
--- Deposit 2,000,000 into Hossein's savings
+-- Deposit into Hossein's savings
 INSERT INTO `transaction` (from_account_id, to_account_id, amount, transaction_type, description, created_by, created_at, status) VALUES
 (@vault1_acc_id, @cust1_sav_id, 2000000.00, 'deposit', 'Initial deposit', 2, NOW(), 'completed');
 
--- Withdrawal 500,000 from Hossein's savings
+-- Withdrawal from Hossein's savings
 INSERT INTO `transaction` (from_account_id, to_account_id, amount, transaction_type, description, created_by, created_at, status) VALUES
 (@cust1_sav_id, @vault1_acc_id, 500000.00, 'withdrawal', 'ATM withdrawal', 2, NOW(), 'completed');
 
--- Transfer 1,000,000 from Hossein's current to savings
+-- Transfer from current to savings
 INSERT INTO `transaction` (from_account_id, to_account_id, amount, transaction_type, description, created_by, created_at, status) VALUES
 (@cust1_cur_id, @cust1_sav_id, 1000000.00, 'transfer', 'Moving funds', 2, NOW(), 'completed');
 
--- Interest payment to Hossein's savings (from treasury)
+-- Interest payment from treasury to savings
 INSERT INTO `transaction` (from_account_id, to_account_id, amount, transaction_type, description, created_by, created_at, status) VALUES
 (@treasury_id, @cust1_sav_id, 12500.00, 'interest', 'Monthly interest', 1, NOW(), 'completed');
 
--- Deposit to Zahra's account
+-- Deposit into Zahra's account
 INSERT INTO `transaction` (from_account_id, to_account_id, amount, transaction_type, description, created_by, created_at, status) VALUES
 (@vault1_acc_id, @cust2_acc_id, 5000000.00, 'deposit', 'Cash deposit', 2, NOW(), 'completed');
 
--- After these transactions, the triggers have adjusted the account balances.
--- The current balances will be:
--- cust1_sav: 15,000,000 + 2,000,000 - 500,000 + 1,000,000 + 12,500 = 17,512,500
--- cust1_cur: 5,000,000 - 1,000,000 = 4,000,000
--- cust2_acc: 25,000,000 + 5,000,000 = 30,000,000
--- vault1: 100,000,000,000 - 2,000,000 + 500,000 - 5,000,000 = 99,993,500,000 (approximately)
--- treasury: 1,000,000,000,000 - 12,500 = 999,999,987,500
-
--- We'll leave the balances as they are now, which is realistic.
-
 -- -----------------------------------------------------------
--- Loan Requests (demo data)
+-- Loan Requests (pending, approved with installments, rejected)
 -- -----------------------------------------------------------
 -- Pending loan for customer 1
 INSERT INTO loan_request (customer_id, loan_type_id, amount, installments, requested_at, status) VALUES
 (1, 1, 100000000.00, 24, NOW(), 'pending');
 
--- Approved loan for customer 2 (with installments generated manually for demo)
+-- Approved loan for customer 2 (Car loan, 500M, 36 months)
 INSERT INTO loan_request (customer_id, loan_type_id, amount, installments, requested_at, status, approved_by, approved_at) VALUES
 (2, 3, 500000000.00, 36, NOW() - INTERVAL 2 DAY, 'approved', 1, NOW());
 SET @approved_loan_id = LAST_INSERT_ID();
--- Insert a few installments (the real approve procedure would insert all 36)
+
+-- Installments for the approved loan (mix of paid, unpaid, and overdue)
+-- First four installments: one paid, three unpaid (one overdue)
 INSERT INTO installment (loan_request_id, due_date, amount, paid_amount, status) VALUES
-(@approved_loan_id, DATE_ADD(CURDATE(), INTERVAL 1 MONTH), 17800000.00, 0, 'unpaid'),
-(@approved_loan_id, DATE_ADD(CURDATE(), INTERVAL 2 MONTH), 17800000.00, 0, 'unpaid'),
-(@approved_loan_id, DATE_ADD(CURDATE(), INTERVAL 3 MONTH), 17800000.00, 0, 'unpaid'),
-(@approved_loan_id, DATE_ADD(CURDATE(), INTERVAL 4 MONTH), 17800000.00, 17800000.00, 'paid'); -- one paid installment
+(@approved_loan_id, DATE_ADD(CURDATE(), INTERVAL 1 MONTH), 17800000.00, 0, 'unpaid'),                              -- future
+(@approved_loan_id, DATE_ADD(CURDATE(), INTERVAL 2 MONTH), 17800000.00, 0, 'unpaid'),                              -- future
+(@approved_loan_id, DATE_SUB(CURDATE(), INTERVAL 5 DAY), 17800000.00, 0, 'unpaid'),                                -- overdue (past, unpaid)
+(@approved_loan_id, DATE_SUB(CURDATE(), INTERVAL 35 DAY), 17800000.00, 17800000.00, 'paid');                       -- paid on time
 
 -- Rejected loan for customer 3
 INSERT INTO loan_request (customer_id, loan_type_id, amount, installments, requested_at, status, approved_by, approved_at) VALUES
 (3, 2, 2000000000.00, 96, NOW() - INTERVAL 5 DAY, 'rejected', 6, NOW());
-
--- Customer login for Hossein Ahmadi (password: pass123)
-INSERT INTO customer_login (customer_id, username, password_hash, status)
-VALUES (1, 'hossein', SHA2('pass123', 256), 'active');
