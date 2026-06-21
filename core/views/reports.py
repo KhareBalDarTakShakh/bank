@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.contrib import messages
 from core.utils import call_procedure, execute_query
 from core.decorators import login_required, role_required
+import json
 
 @login_required
 @role_required('Branch Manager', 'System Admin')
@@ -44,8 +45,19 @@ def province_report(request):
     except Exception as e:
         messages.error(request, str(e))
 
+    branch_names = [b['branch_name'] for b in branches]
+    branch_deposits = [float(b['total_deposits']) for b in branches]
+    branch_loans = [float(b['total_loans']) for b in branches]
+
+    chart_data = json.dumps({
+        'names': branch_names,
+        'deposits': branch_deposits,
+        'loans': branch_loans,
+    })
+
     return render(request, 'core/province_report.html', {
         'report': report,
         'province_name': info['province_name'],
         'branches': branches,
+        'chart_data': chart_data,
     })

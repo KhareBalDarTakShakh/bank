@@ -1,4 +1,5 @@
 {% extends "core/base.html" %}
+{% load static %}
 
 {% block title %}Province Report – {{ province_name }}{% endblock %}
 
@@ -6,7 +7,7 @@
 <h2>Province Dashboard: {{ province_name }}</h2>
 
 {% if report %}
-<!-- Summary Cards -->
+<!-- Summary Cards (unchanged) -->
 <div class="row mt-4">
     <div class="col-md-3">
         <div class="card text-white bg-primary mb-3">
@@ -34,8 +35,20 @@
     </div>
 </div>
 
-<!-- Per‑Branch Performance Table -->
-<h3 class="mt-5">Branch Performance</h3>
+<!-- Separate charts for deposits and loans -->
+<div class="row mt-5">
+    <div class="col-md-6">
+        <h4>Total Deposits by Branch</h4>
+        <canvas id="depositsChart" width="400" height="250"></canvas>
+    </div>
+    <div class="col-md-6">
+        <h4>Total Loans by Branch</h4>
+        <canvas id="loansChart" width="400" height="250"></canvas>
+    </div>
+</div>
+
+<!-- Branch Details Table (unchanged) -->
+<h3 class="mt-5">Branch Performance Details</h3>
 <div class="table-responsive">
     <table class="table table-striped table-hover">
         <thead class="table-dark">
@@ -55,12 +68,81 @@
                 <td>{{ branch.total_loans }}</td>
             </tr>
             {% empty %}
-            <tr><td colspan="4" class="text-center">No branches found.</td></tr>
+            <tr><td colspan="4" class="text-center">No branch data available.</td></tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
 {% else %}
-<div class="alert alert-warning">No report data available.</div>
+<div class="alert alert-warning">No report data available for this province.</div>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    try {
+        const raw = '{{ chart_data|safe }}';
+        console.log('Chart data:', raw);
+        const chartData = JSON.parse(raw);
+        if (!chartData || !chartData.names || chartData.names.length === 0) {
+            console.warn('No branch data for charts');
+            return;
+        }
+
+        // Deposits chart
+        const ctxDeposits = document.getElementById('depositsChart');
+        if (ctxDeposits) {
+            new Chart(ctxDeposits, {
+                type: 'bar',
+                data: {
+                    labels: chartData.names,
+                    datasets: [{
+                        label: 'Total Deposits',
+                        data: chartData.deposits,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+            console.log('Deposits chart created');
+        }
+
+        // Loans chart
+        const ctxLoans = document.getElementById('loansChart');
+        if (ctxLoans) {
+            new Chart(ctxLoans, {
+                type: 'bar',
+                data: {
+                    labels: chartData.names,
+                    datasets: [{
+                        label: 'Total Loans',
+                        data: chartData.loans,
+                        backgroundColor: 'rgba(255, 99, 132, 0.7)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+            console.log('Loans chart created');
+        }
+    } catch (e) {
+        console.error('Chart error:', e);
+    }
+});
+</script>
 {% endblock %}
