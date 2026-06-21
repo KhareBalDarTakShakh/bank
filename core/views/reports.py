@@ -48,11 +48,15 @@ def province_report(request):
     branch_names = [b['branch_name'] for b in branches]
     branch_deposits = [float(b['total_deposits']) for b in branches]
     branch_loans = [float(b['total_loans']) for b in branches]
+    branch_withdrawals = [float(b['total_withdrawals']) for b in branches]
+    branch_transactions = [int(b['transaction_count']) for b in branches]
 
     chart_data = json.dumps({
         'names': branch_names,
         'deposits': branch_deposits,
         'loans': branch_loans,
+        'withdrawals': branch_withdrawals,
+        'transactions': branch_transactions,
     })
 
     return render(request, 'core/province_report.html', {
