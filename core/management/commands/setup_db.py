@@ -25,6 +25,7 @@ class Command(BaseCommand):
             'sql/08_phase6_loans.sql',
             'sql/09_phase7_events_and_views.sql',
             'sql/10_final.sql',
+            'sql/11_fixes.sql'
             'sql/mock_data.sql',
         ]
 
