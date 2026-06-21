@@ -9,78 +9,98 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}">🏦 Core Bank</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            {% if request.session.employee %}
-                <ul class="navbar-nav me-auto">
-                    <!-- Common links for ALL roles -->
-                    <li class="nav-item"><a class="nav-link" href="{% url 'customer_search' %}">Customers</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'transfer' %}">Transfer</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'deposit' %}">Deposit</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'withdrawal' %}">Withdrawal</a></li>
+        <div class="container">
+            {% if request.session.customer %}
+                <a class="navbar-brand" href="{% url 'customer_dashboard' %}">🏦 Core Bank</a>
+            {% else %}
+                <a class="navbar-brand" href="{% url 'home' %}">🏦 Core Bank</a>
+            {% endif %}
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                {% if request.session.employee %}
+                    <!-- ========== EMPLOYEE NAVBAR ========== -->
+                    <ul class="navbar-nav me-auto">
+                        <!-- Common links for ALL roles -->
+                        <li class="nav-item"><a class="nav-link" href="{% url 'customer_search' %}">Customers</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'transfer' %}">Transfer</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'deposit' %}">Deposit</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'withdrawal' %}">Withdrawal</a></li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="loanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Loans
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="loanDropdown">
-                            <li><a class="dropdown-item" href="{% url 'loan_request' %}">New Loan Request</a></li>
-                            {% if request.session.employee.role_name == 'Branch Manager' or request.session.employee.role_name == 'System Admin' %}
-                                <li><a class="dropdown-item" href="{% url 'loan_approval_queue' %}">Loan Approvals</a></li>
-                            {% endif %}
-                        </ul>
-                    </li>
-
-                    {% if request.session.employee.role_name == 'System Admin' %}
-                        <!-- Admin Management Dropdown -->
+                        <!-- Loans dropdown -->
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Management
+                            <a class="nav-link dropdown-toggle" href="#" id="loanDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Loans
                             </a>
-                            <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                                <li><a class="dropdown-item" href="{% url 'branch_list' %}">Branches</a></li>
-                                <li><a class="dropdown-item" href="{% url 'employee_list' %}">Employees</a></li>
-                                <li><a class="dropdown-item" href="{% url 'role_list' %}">Roles</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'account_type_list' %}">Account Types</a></li>
-                                <li><a class="dropdown-item" href="{% url 'loan_type_list' %}">Loan Types</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'country_list' %}">Countries</a></li>
-                                <li><a class="dropdown-item" href="{% url 'province_list' %}">Provinces</a></li>
-                                <li><a class="dropdown-item" href="{% url 'city_list' %}">Cities</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{% url 'audit_log_list' %}">Audit Logs</a></li>
+                            <ul class="dropdown-menu" aria-labelledby="loanDropdown">
+                                <li><a class="dropdown-item" href="{% url 'loan_request' %}">New Loan Request</a></li>
+                                {% if request.session.employee.role_name == 'Branch Manager' or request.session.employee.role_name == 'System Admin' %}
+                                    <li><a class="dropdown-item" href="{% url 'loan_approval_queue' %}">Loan Approvals</a></li>
+                                {% endif %}
                             </ul>
                         </li>
-                    {% endif %}
 
-                    <!-- Branch Report (Managers and Admins) -->
-                    {% if request.session.employee.role_name == 'Branch Manager' or request.session.employee.role_name == 'System Admin' %}
-                        <li class="nav-item"><a class="nav-link" href="{% url 'branch_report' %}">Branch Report</a></li>
-                        <li class="nav-item"><a class="nav-link" href="{% url 'vault_list' %}">Vaults</a></li>
+                        {% if request.session.employee.role_name == 'System Admin' %}
+                            <!-- Admin Management Dropdown -->
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Management
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                                    <li><a class="dropdown-item" href="{% url 'branch_list' %}">Branches</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'employee_list' %}">Employees</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'role_list' %}">Roles</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'account_type_list' %}">Account Types</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'loan_type_list' %}">Loan Types</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'country_list' %}">Countries</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'province_list' %}">Provinces</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'city_list' %}">Cities</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'audit_log_list' %}">Audit Logs</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+
+                        <!-- Branch Report & Vaults (Manager/Admin) -->
+                        {% if request.session.employee.role_name == 'Branch Manager' or request.session.employee.role_name == 'System Admin' %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'loan_approval_queue' %}">Loan Approvals</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'branch_report' %}">Branch Report</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'vault_list' %}">Vaults</a></li>
                             <li class="nav-item"><a class="nav-link" href="{% url 'province_report' %}">Province Report</a></li>
-                    {% endif %}
-                </ul>
+                        {% endif %}
+                    </ul>
+                    <!-- Employee user info & logout -->
+                    <div class="navbar-text text-white me-3">
+                        {{ request.session.employee.full_name }} ({{ request.session.employee.role_name }})
+                    </div>
+                    <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Logout</a>
 
-                <!-- User info & logout -->
-                <div class="navbar-text text-white me-3">
-                    {{ request.session.employee.full_name }} ({{ request.session.employee.role_name }})
-                </div>
-                <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">Logout</a>
-            {% else %}
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    </li>
-                </ul>
-            {% endif %}
+                {% elif request.session.customer %}
+                    <!-- ========== CUSTOMER NAVBAR ========== -->
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item"><a class="nav-link" href="{% url 'customer_dashboard' %}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'my_accounts' %}">My Accounts</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'my_transfer' %}">Transfer</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'my_loans' %}">My Loans</a></li>
+                    </ul>
+                    <div class="navbar-text text-white me-3">
+                        {{ request.session.customer.full_name }}
+                    </div>
+                    <a href="{% url 'customer_logout' %}" class="btn btn-outline-light btn-sm">Logout</a>
+
+                {% else %}
+                    <!-- ========== LOGGED OUT ========== -->
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Employee Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{% url 'customer_login' %}">Customer Login</a></li>
+                    </ul>
+                {% endif %}
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
     <div class="container">
         {% if messages %}

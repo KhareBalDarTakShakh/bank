@@ -1,0 +1,21 @@
+{% extends "core/base.html" %}
+{% block title %}My Accounts{% endblock %}
+{% block content %}
+<h2>My Accounts</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead><tr><th>Account Number</th><th>Type</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>
+            {% for acc in accounts %}
+            <tr>
+                <td>{{ acc.account_number }}</td>
+                <td>{{ acc.account_type_name }}</td>
+                <td>{{ acc.balance }}</td>
+                <td>{{ acc.status }}</td>
+                <td><a href="{% url 'my_transactions' acc.id %}" class="btn btn-sm btn-outline-info">Transactions</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

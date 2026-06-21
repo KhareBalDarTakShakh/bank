@@ -40,3 +40,14 @@ def role_required(*allowed_roles):
             return view_func(request, *args, **kwargs)
         return wrapper
     return decorator
+
+def customer_login_required(view_func):
+    """
+    Redirect to customer login if no customer session exists.
+    """
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        if not request.session.get('customer'):
+            return redirect('customer_login')
+        return view_func(request, *args, **kwargs)
+    return wrapper

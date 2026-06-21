@@ -14,6 +14,7 @@ from .views import (
     transactions,
     loans,
     reports,
+    customer_panel,
 )
 
 urlpatterns = [
@@ -100,4 +101,18 @@ urlpatterns = [
     path('installments/pay/<int:installment_id>/', loans.pay_installment, name='pay_installment'),
 
     path('province/report/', reports.province_report, name='province_report'),
+
+    # Customer Panel
+    path('customer/login/', customer_panel.customer_login_view, name='customer_login'),
+    path('customer/logout/', customer_panel.customer_logout_view, name='customer_logout'),
+    path('customer/dashboard/', customer_panel.customer_dashboard, name='customer_dashboard'),
+    path('customer/accounts/', customer_panel.my_accounts, name='my_accounts'),
+    path('customer/transactions/<int:account_id>/', customer_panel.my_transactions, name='my_transactions'),
+    path('customer/transfer/', customer_panel.my_transfer, name='my_transfer'),
+    path('customer/loans/', customer_panel.my_loans, name='my_loans'),
+    path('customer/loans/request/', customer_panel.request_loan, name='request_loan'),
+    path('customer/loans/<int:loan_id>/installments/', customer_panel.my_loan_installments,
+         name='my_loan_installments'),
+    path('customer/installments/pay/<int:installment_id>/', customer_panel.customer_pay_installment,
+         name='customer_pay_installment'),
 ]

@@ -1,0 +1,68 @@
+{% extends "core/base.html" %}
+{% block title %}Installments – Loan #{{ loan.id }}{% endblock %}
+{% block content %}
+<div class="mb-3">
+    <a href="{% url 'my_loans' %}" class="btn btn-outline-secondary btn-sm">&larr; Back to My Loans</a>
+</div>
+
+<h2>Loan Details</h2>
+<div class="card mb-4">
+    <div class="card-body">
+        <p><strong>Loan ID:</strong> {{ loan.id }}</p>
+        <p><strong>Loan Type:</strong> {{ loan.loan_type_name }}</p>
+        <p><strong>Amount:</strong> {{ loan.amount }}</p>
+        <p><strong>Annual Interest Rate:</strong> {{ loan.annual_interest_rate }}%</p>
+        <p><strong>Total Installments:</strong> {{ loan.installments }}</p>
+        <p><strong>Status:</strong>
+            <span class="badge bg-{% if loan.status == 'approved' %}success{% else %}secondary{% endif %}">{{ loan.status }}</span>
+        </p>
+    </div>
+</div>
+
+<h3>Installment Schedule</h3>
+<div class="table-responsive">
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Due Date</th>
+                <th>Amount</th>
+                <th>Paid Amount</th>
+                <th>Status</th>
+                <th>Paid At</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inst in installments %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ inst.due_date }}</td>
+                <td>{{ inst.amount }}</td>
+                <td>{{ inst.paid_amount|default:"0.00" }}</td>
+                <td>
+                    {% if inst.status == 'paid' %}
+                        <span class="badge bg-success">Paid</span>
+                    {% else %}
+                        <span class="badge bg-warning">Unpaid</span>
+                    {% endif %}
+                </td>
+                <td>{{ inst.paid_at|default:"-" }}</td>
+                <td>
+                    {% if inst.status == 'unpaid' %}
+                        <form method="post" action="{% url 'customer_pay_installment' inst.id %}" class="d-flex align-items-center gap-2">
+                            {% csrf_token %}
+                            <input type="hidden" name="loan_id" value="{{ loan.id }}">
+                            <input type="number" step="0.01" name="amount" class="form-control form-control-sm" style="width: 120px;" value="{{ inst.amount }}" required>
+                            <button type="submit" class="btn btn-sm btn-outline-success">Pay</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="7" class="text-center">No installments found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

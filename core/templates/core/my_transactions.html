@@ -1,0 +1,31 @@
+{% extends "core/base.html" %}
+{% block title %}My Transactions – {{ account.account_number }}{% endblock %}
+{% block content %}
+<div class="mb-3">
+    <a href="{% url 'customer_dashboard' %}" class="btn btn-outline-secondary btn-sm">&larr; Back to Dashboard</a>
+</div>
+<h2>Transactions for {{ account.account_number }}</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead><tr><th>ID</th><th>Type</th><th>Amount</th><th>From</th><th>To</th><th>Description</th><th>Date</th><th>Status</th></tr></thead>
+        <tbody>
+            {% for txn in transactions %}
+            <tr>
+                <td>{{ txn.id }}</td>
+                <td>{{ txn.transaction_type }}</td>
+                <td>{{ txn.amount }}</td>
+                <td>{{ txn.from_account_id }}</td>
+                <td>{{ txn.to_account_id }}</td>
+                <td>{{ txn.description }}</td>
+                <td>{{ txn.created_at }}</td>
+                <td><span class="badge bg-success">{{ txn.status }}</span></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% if page > 1 %}
+    <a href="?page={{ page|add:"-1" }}" class="btn btn-sm btn-outline-primary">&laquo; Previous</a>
+{% endif %}
+<a href="?page={{ page|add:"1" }}" class="btn btn-sm btn-outline-primary">Next &raquo;</a>
+{% endblock %}
